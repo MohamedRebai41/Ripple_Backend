@@ -13,7 +13,7 @@ class PreprocessingService:
         self.stop_words = set(stopwords.words('english'))
     def preprocess_query(self,query:str):
         if(detect(query) != 'en'):
-            query = self.translator.translate(query)
+            query = self.translator.translate(query).text
         query = query.lower()
         #Remove URLs
         query = re.sub(r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', '', query)
