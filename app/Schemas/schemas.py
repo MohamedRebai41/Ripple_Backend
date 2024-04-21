@@ -11,8 +11,10 @@ class SimilarityQueryParams(BaseModel):
 
 
 class SearchSessionConfig(BaseModel):
-    max_results: int = Query(...,gt=1)
-    threshold : float = Query(...,ge=0,le=0.7)
+    max_results: int = Query(10,gt=1)
+    threshold : float = Query(0.5,ge=0,le=0.7)
+    minRequests: int = Query(2,ge=0,le=20)
+    maxRequests: int = Query(5,ge=0,le=20)
     
 
 class SearchBody(BaseModel):

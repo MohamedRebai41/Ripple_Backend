@@ -6,10 +6,10 @@ from pinecone import Pinecone
 import os
 from dotenv import load_dotenv
 from fastapi import Depends
-from sessionManager import SessionManager
-from openAIService import OpenAIService
-from preprocessingService import PreprocessingService
-from pineconeRepository import PineconeRepository
+from app.Services.sessionManager import SessionManager
+from app.Services.openAIService import OpenAIService
+from app.Services.preprocessingService import PreprocessingService
+from app.Services.pineconeRepository import PineconeRepository
 
 def get_embeddings_model():
     try:
