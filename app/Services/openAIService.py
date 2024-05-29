@@ -1,4 +1,3 @@
-import json
 class OpenAIService:
     def __init__(self, client):
         self.client = client
@@ -22,7 +21,7 @@ class OpenAIService:
             query = template.replace(placeholder, value)
         return query
     
-    def get_message(self,role,message):
+    def get_message(self,role,message):     
         return {'role':role, 'content':message}
     
     def get_start_message(self,input):

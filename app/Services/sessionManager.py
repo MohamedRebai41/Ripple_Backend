@@ -5,8 +5,8 @@ from fastapi import HTTPException
 import redis
 
 class SessionManager:
-    def __init__(self):
-        self.client = redis.from_url(os.getenv("REDIS_URL"),decode_responses=True)
+    def __init__(self, client):
+        self.client = client
         self.expiry_time = 60*60*24
         if(self.client == None):
             raise Exception("Redis client is not created")

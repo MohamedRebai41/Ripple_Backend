@@ -37,7 +37,6 @@ def semanticSearchInfluencers(data: SearchBody ,session_key:str=Query(...),
                                 sessionManager:SessionManager = Depends(get_session_manager)):
 
     session = sessionManager.get_session(session_key=session_key)
-    print(session)
     input = data.input
     if(len(session["conversation"]) == 0):
         new_query = openAIService.get_start_message(input)
@@ -54,7 +53,7 @@ def semanticSearchInfluencers(data: SearchBody ,session_key:str=Query(...),
     #Querying the vector database with the embedded query 
     assistant_response = json.loads(raw_assistant_response)
     query = preprocessingService.preprocess_query(assistant_response["enhanced_query"])
-    query_embedding = model.encode(assistant_response["enhanced_query"])   
+    query_embedding = model.encode(query)   
     results = pineconeRepository.search_embeddings(query_embedding.tolist(), session["max_results"])
 
     if (results[0]["score"] > session["threshold"] and session["requestNumber"] >= session["minRequests"]) or ( session["requestNumber"] >= session["maxRequests"]):

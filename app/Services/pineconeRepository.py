@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from pinecone import Index
 class PineconeRepository:
     def __init__(self, client: Index):
@@ -12,3 +13,5 @@ class PineconeRepository:
 
     def get_similar(self, influencer_id:str, num_results:int, namespace="miniLM"):
         return self.client.query(id=influencer_id,top_k=num_results,namespace=namespace)["matches"][1:]
+    
+

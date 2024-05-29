@@ -1,6 +1,14 @@
 version: "3.8"
 
 services:
+  fastapi_app:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    env_file:
+      - .env
   redis:
     image: redis:latest
     ports:
