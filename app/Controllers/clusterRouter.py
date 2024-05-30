@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from app.Dependencies.dependencies import   get_pinecone_repository, get_topic_model
+from app.Schemas.schemas import RenameTopicBody
 from app.Services.pineconeRepository import PineconeRepository
 
 
@@ -19,7 +20,9 @@ def get_topics(topic_model = Depends(get_topic_model)):
 
 
 @clusterRouter.post("/rename/{topic_id}")
-def rename_topic(topic_id,name:str, topic_model = Depends(get_topic_model)):
+def rename_topic(topic_id:int = Path(...,min=-1) ,name: RenameTopicBody = Body(...), topic_model = Depends(get_topic_model)):
+    if(topic_id >= len(topic_model.custom_labels_) - 1):
+        raise HTTPException(404,"Topic was not found!")
     topic_model.set_topic_labels({int(topic_id):name})   
     try:
         topic_model.push_to_hf_hub(
@@ -33,10 +36,10 @@ def rename_topic(topic_id,name:str, topic_model = Depends(get_topic_model)):
 
 
 
-# @clusterRouter.get("/category/{infludencer_id}")
-# def getCategory(influencer_id: str, pineconeRepository: PineconeRepository = Depends(get_pinecone_repository),topic_model = Depends(get_topic_model)):
-#     category_id = pineconeRepository.findInfluencerCategory(influencer_id)
-#     return {"category": topic_model.custom_labels_[int(category_id+1)]}
+@clusterRouter.get("/category/{influencer_id}")
+def getCategory(influencer_id: str, pineconeRepository: PineconeRepository = Depends(get_pinecone_repository),topic_model = Depends(get_topic_model)):
+    category_id = pineconeRepository.get_influencer_category(influencer_id)
+    return {"category": topic_model.custom_labels_[int(category_id+1)]}
 
 
 

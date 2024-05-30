@@ -17,5 +17,9 @@ class SearchSessionConfig(BaseModel):
     maxRequests: int = Query(5,ge=0,le=20)
     
 
+
+class RenameTopicBody(BaseModel):
+    name: str = Field(...,min_length=1)
+
 class SearchBody(BaseModel):
     input: str = Field(...,min_length=1)

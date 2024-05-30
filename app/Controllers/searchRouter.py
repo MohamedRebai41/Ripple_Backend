@@ -57,7 +57,7 @@ def semanticSearchInfluencers(data: SearchBody ,session_key:str=Query(...),
     results = pineconeRepository.search_embeddings(query_embedding.tolist(), session["max_results"])
 
     if (results[0]["score"] > session["threshold"] and session["requestNumber"] >= session["minRequests"]) or ( session["requestNumber"] >= session["maxRequests"]):
-        return [{'id':result["id"], 'score':result["score"]} for result in results]
+        return {"type":"RESULT", "data":[{'id':result["id"], 'score':result["score"]} for result in results]}
     else:
-        return  assistant_response["next_question"]
+        return  {"type":"QUESTION", "data": assistant_response["next_question"]}
     
