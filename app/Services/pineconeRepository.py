@@ -17,6 +17,6 @@ class PineconeRepository:
     def get_influencer_category(self, influencer_id:str):
         results = self.client.fetch(ids=[influencer_id],namespace="prod")["vectors"]
         if(len(results)==0):
-            raise HTTPException(status_code=404, detail="Influencer not found")
-        return [influencer_id]['metadata']['category']
+            return -1
+        return results[influencer_id]['metadata']['category']
 

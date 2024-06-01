@@ -13,7 +13,6 @@ def get_topics(topic_model = Depends(get_topic_model)):
     filtered_df = topics[["Name","Representation","Count"]]
     topic_list = filtered_df.to_dict(orient="records")
     labels = topic_model.custom_labels_
-    print(labels)
     if(labels == None):
         return topic_list
     return [{"Name":label, "Keywords":topic["Representation"],"Count" :topic["Count"]} for label,topic in zip(labels,topic_list)]

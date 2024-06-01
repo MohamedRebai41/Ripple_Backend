@@ -1,3 +1,4 @@
+from email.policy import HTTP
 from bertopic import BERTopic
 # from googletrans import Translator
 from openai import OpenAI
@@ -6,7 +7,7 @@ from dotenv import load_dotenv
 from pinecone import Pinecone
 import os
 from dotenv import load_dotenv
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 
 from app.Services.sessionManager import SessionManager
 from app.Services.openAIService import OpenAIService
@@ -63,6 +64,8 @@ def get_preprocessing_service():
 def get_redis_pool():
     try:
         return global_resources["redis_pool"]
+    except:
+        raise HTTPException("Redis pool could no be created")
     finally:
         pass
 
