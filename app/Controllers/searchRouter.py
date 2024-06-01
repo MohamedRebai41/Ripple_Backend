@@ -36,8 +36,10 @@ def semanticSearchInfluencers(data: SearchBody ,session_key:str=Query(...),
                                 openAIService: OpenAIService = Depends(get_openai_service),
                                 sessionManager:SessionManager = Depends(get_session_manager)):
     """
-        return an object with the attributes:
+        Returns an object with the attributes:
+
             - type: QUESTION|RESULT to indicate the type of the result
+
             - data: str|array depending on the type of the response 
     """
 
