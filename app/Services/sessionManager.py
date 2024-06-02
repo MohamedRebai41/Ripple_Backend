@@ -1,8 +1,10 @@
 import json
-import secrets
 import os
-from fastapi import HTTPException
+import secrets
+
 import redis
+from fastapi import HTTPException
+
 
 class SessionManager:
     def __init__(self, client):
@@ -18,7 +20,7 @@ class SessionManager:
     def new_session(self,data=""):
         key = secrets.token_urlsafe()
         self.client.set(key,json.dumps(data))
-        self.client.setex(key,self.expiry_time)
+        self.client.setex(key,self.expiry_time, json.dumps(data))
         return key
             
     def get_session(self,session_key):
