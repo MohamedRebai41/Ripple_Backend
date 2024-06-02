@@ -9,10 +9,13 @@ from app.Controllers.clusterRouter import clusterRouter
 from app.Controllers.searchRouter import searchRouter
 from sentence_transformers import SentenceTransformer
 from app.Dependencies.globalResources import global_resources
+import nltk
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+    nltk.download("stopwords")
     global_resources["embedding_model"] = embedding_model
     HfFolder.save_token(os.getenv("HF_TOKEN"))
     topic_model = BERTopic.load("RebaiMed/Bertopic-Influencers",embedding_model=embedding_model)
