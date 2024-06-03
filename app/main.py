@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 from huggingface_hub import HfFolder
 import redis
+from app.Controllers.visualiseRouter import visualiseRouter
 from app.Controllers.clusterRouter import clusterRouter
 from app.Controllers.searchRouter import searchRouter
 from sentence_transformers import SentenceTransformer
@@ -30,6 +31,7 @@ load_dotenv(dotenv_path=".env")
 app = FastAPI(lifespan=lifespan)
 app.include_router(searchRouter)
 app.include_router(clusterRouter)
+app.include_router(visualiseRouter)
 
 
 

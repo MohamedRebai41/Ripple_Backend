@@ -40,22 +40,39 @@ def get_pinecone_client():
         pcClient = None
 
 def get_pinecone_repository(client=Depends(get_pinecone_client)):
-    return PineconeRepository(client)
+    try:
+        repo = PineconeRepository(client) 
+        yield repo
+    finally:
+        repo = None
+
 
 
 #OpenAI dependency
 def get_openai_client():
-    return OpenAI()
+    try:
+        client = OpenAI()
+        yield client
+    finally:
+        client = None
 
 def get_openai_service(client=Depends(get_openai_client)):
-    return OpenAIService(client)
+    try:
+        service = OpenAIService(client)
+        yield service
+    finally:
+        service = None
 
 
 # def get_translator():
 #     return Translator()
 
 def get_preprocessing_service():
-    return PreprocessingService()
+    try:
+        service = PreprocessingService()
+        yield service
+    finally:
+        service = None
 
 
 
@@ -71,4 +88,8 @@ def get_redis_pool():
 
 
 def get_session_manager(client = Depends(get_redis_pool)):
-    return SessionManager(client)
+    try:
+        service = SessionManager(client)
+        yield service
+    finally:
+        service = None

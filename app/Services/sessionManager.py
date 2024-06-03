@@ -10,8 +10,7 @@ class SessionManager:
     def __init__(self, client):
         try:
             self.client = client
-            self.expiry_time = 60*60*24
-            print(self.client)
+            self.expiry_time = 60*60*24*7
         except:
             raise HTTPException("could not instantiate session manager")
 
@@ -25,7 +24,7 @@ class SessionManager:
             
     def get_session(self,session_key):
         if(not self.client.exists(session_key)):
-            raise HTTPException("Session key does not exist")
+            raise HTTPException(401,"Session key does not exist")
         return json.loads(self.client.get(session_key))
     
 

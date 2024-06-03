@@ -13,16 +13,19 @@ def get_topics(topic_model = Depends(get_topic_model)):
     filtered_df = topics[["Name","Representation","Count"]]
     topic_list = filtered_df.to_dict(orient="records")
     labels = topic_model.custom_labels_
-    if(labels == None):
+    if labels is None:
+        for index, topic in enumerate(topic_list, start=-1):
+            topic["id"] = index
         return topic_list
-    return [{"Name":label, "Keywords":topic["Representation"],"Count" :topic["Count"]} for label,topic in zip(labels,topic_list)]
+    return [{"id": index, "Name": label, "Keywords": topic["Representation"], "Count": topic["Count"]} 
+            for index, (label, topic) in enumerate(zip(labels, topic_list), start=-1)]
 
 
 @clusterRouter.post("/rename/{topic_id}")
-def rename_topic(topic_id:int = Path(...,min=-1) ,name: RenameTopicBody = Body(...), topic_model = Depends(get_topic_model)):
+def rename_topic(topic_id:int = Path(...,min=-1) ,body: RenameTopicBody = Body(...), topic_model = Depends(get_topic_model)):
     if(topic_id >= len(topic_model.custom_labels_) - 1):
         raise HTTPException(404,"Topic was not found!")
-    topic_model.set_topic_labels({int(topic_id):name})   
+    topic_model.set_topic_labels({int(topic_id):body.name})   
     try:
         topic_model.push_to_hf_hub(
             repo_id="RebaiMed/Bertopic-Influencers",

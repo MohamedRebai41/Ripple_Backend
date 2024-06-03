@@ -28,6 +28,14 @@ def get_token(config: SearchSessionConfig ,sessionManager=Depends(get_session_ma
         "maxRequests": config.maxRequests
     } )
 
+
+@searchRouter.post("/title")
+def get_title(data: SearchBody, openAIService: OpenAIService = Depends(get_openai_service)):
+    message = data.input
+    raw_result = openAIService.generate_title(message)
+    return json.loads(raw_result)
+
+
 @searchRouter.post("/interactive/search")
 def semanticSearchInfluencers(data: SearchBody ,session_key:str=Query(...),
                                 model = Depends(get_embeddings_model),
@@ -53,12 +61,16 @@ def semanticSearchInfluencers(data: SearchBody ,session_key:str=Query(...),
     #Updating the conversation
     session["conversation"].append(new_query)
     raw_assistant_response = openAIService.process_query(session["conversation"])
+    assistant_response = json.loads(raw_assistant_response)
     session["conversation"].append(openAIService.get_message('assistant',raw_assistant_response))
-    session["requestNumber"]+=1
+    if(not assistant_response["irrelevant"]):
+        session["requestNumber"]+=1
     sessionManager.update_session(session_key,session)
 
+
+    if(assistant_response["irrelevant"]): 
+        return {"type":"QUESTION", "data": assistant_response["next_question"]}
     #Querying the vector database with the embedded query 
-    assistant_response = json.loads(raw_assistant_response)
     query = preprocessingService.preprocess_query(assistant_response["enhanced_query"])
     query_embedding = model.encode(query)   
     results = pineconeRepository.search_embeddings(query_embedding.tolist(), session["max_results"])
