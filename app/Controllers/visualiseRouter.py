@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, Path, Response
 from app.Dependencies.dependencies import  get_topic_model
-import mpld3
 
 visualiseRouter=APIRouter(prefix="/visualise")
 
